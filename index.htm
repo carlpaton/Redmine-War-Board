@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>Redmine War Board</title>
+	
+	<link rel="stylesheet" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">	
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>	
+	
+	<script type="text/javascript">
+		$(document).ready(function () {
+			Refresh();
+			setInterval("Refresh()", 10000);		
+		});
+		
+		//Redefine the console.log function, this turns it off when uncommented
+		console.log = function() {}
+
+		var baseUrl = "http://192.168.0.106:3001";
+		var apiKey = "?key=ca9dd590bd031d0c77b6a5dd83464bff313a3593";
+		var issueResource = "/issues.json";
+		var issueResourceFilters = "&sort=id%3Adesc&project_id=1";
+		
+		function LoadTable(data)
+		{
+			$.each(data.issues, function (index, obj) {
+				console.log(obj.id);
+				console.log(obj.tracker.name);
+				console.log(obj.subject);
+								
+				$( "#resultstbody" ).append(
+				"<tr>" +
+				"<td>" + obj.id + "</td>" +
+				"<td>" + obj.tracker.name + "</td>" +
+				"<td>" + obj.status.name + "</td>" +	
+				"<td>" + obj.priority.name + "</td>" +		
+				"<td>" + obj.subject + "</td>" +	
+				"<td>" + obj.created_on + "</td>" +					
+				"</tr>" );
+            });		
+		}
+		
+		function DoDataTable()
+		{
+			$('#results').DataTable( {
+				"order": [[ 1, "desc" ]]
+			});		
+		}
+		
+		function Success(data)
+		{
+			LoadTable(data);
+			DoDataTable();
+		}
+		
+		function Refresh() {
+			var url = baseUrl + issueResource + apiKey + issueResourceFilters;
+			console.log(url);
+			
+			$.ajax({
+				url: url,
+				type: 'GET',
+				crossDomain: true,
+				dataType: 'jsonp',
+				contentType  : 'application/json',
+				success: function(data) {
+					Success(data);
+				},
+				error: function () {
+					alert('Failed to reload data.');
+				}			
+			});
+		}
+	</script>	
+</head>
+<body>
+	<table id="results">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Tracker</th>
+				<th>Status</th>		
+				<th>Priority</th>		
+				<th>Subject</th>			
+				<th>Created On</th>					
+			</tr>
+		</thead>
+		<tbody id="resultstbody">
+		</tbody>
+	</table>
+</body>
+</html>
