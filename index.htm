@@ -40,6 +40,8 @@
 				"<td>" + obj.created_on + "</td>" +					
 				"</tr>" );
             });		
+
+			DoDataTable();
 		}
 		
 		function DoDataTable()
@@ -47,12 +49,6 @@
 			$('#results').DataTable( {
 				"order": [[ 1, "desc" ]]
 			});		
-		}
-		
-		function Success(data)
-		{
-			LoadTable(data);
-			DoDataTable();
 		}
 		
 		function Refresh() {
@@ -66,7 +62,7 @@
 				dataType: 'jsonp',
 				contentType  : 'application/json',
 				success: function(data) {
-					Success(data);
+					LoadTable(data);
 				},
 				error: function () {
 					alert('Failed to reload data.');
