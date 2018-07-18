@@ -56,3 +56,4 @@ This will filter on the project:
 * http://api.jquery.com/jquery.ajax/
 * http://api.jquery.com/append/
 * https://datatables.net/
+* https://datatables.net/manual/tech-notes/3
