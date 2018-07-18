@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -10,27 +10,29 @@
 	<script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>	
 	
 	<script type="text/javascript">
-		$(document).ready(function () {
+		$(document).ready(function () {		
 			Refresh();
-			setInterval("Refresh()", 10000);		
+			setInterval("Refresh()", 60000); //60 seconds * 1000 = 60000 milliseconds		
 		});
 		
 		//Redefine the console.log function, this turns it off when uncommented
-		console.log = function() {}
-
+		//console.log = function() {}
+		
 		var baseUrl = "http://192.168.0.106:3001";
 		var apiKey = "?key=ca9dd590bd031d0c77b6a5dd83464bff313a3593";
 		var issueResource = "/issues.json";
 		var issueResourceFilters = "&sort=id%3Adesc&project_id=1";
 		
 		function LoadTable(data)
-		{
+		{		
+			$("#resultstbody").html("");
+
 			$.each(data.issues, function (index, obj) {
-				console.log(obj.id);
-				console.log(obj.tracker.name);
-				console.log(obj.subject);
+				//console.log(obj.id);
+				//console.log(obj.tracker.name);
+				//console.log(obj.subject);
 								
-				$( "#resultstbody" ).append(
+				$("#resultstbody").append(
 				"<tr>" +
 				"<td>" + obj.id + "</td>" +
 				"<td>" + obj.tracker.name + "</td>" +
@@ -40,15 +42,16 @@
 				"<td>" + obj.created_on + "</td>" +					
 				"</tr>" );
             });		
-
-			DoDataTable();
-		}
-		
-		function DoDataTable()
-		{
-			$('#results').DataTable( {
-				"order": [[ 1, "desc" ]]
-			});		
+			
+			if ($.fn.dataTable.isDataTable('#results')) {
+				$('#example').DataTable();
+			}
+			else {
+				$('#results').DataTable({
+					paging: false,
+					order:[[1,"desc"]]
+				});
+			}						
 		}
 		
 		function Refresh() {
