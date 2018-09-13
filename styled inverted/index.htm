@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>Redmine War Board</title>
+	
+	<link rel="stylesheet" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">	
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>	
+	
+	<style>
+        body {
+            font-family: Verdana, sans-serif;
+            font-size: 18px;
+            background-color: #595959;
+            color: #fff;
+        }	
+	    #results tbody tr td:nth-child(2),#results tbody tr td:nth-child(3),#results tbody tr td:nth-child(4) {
+		    text-align:center;
+	    }
+        #results, #resultstbody tr {
+            background-color: #3a3a3a !important;
+        }
+        .orange {
+            text-shadow: 2px 2px 5px #ffcc00;
+        }
+        .red {
+            text-shadow: 2px 2px 5px red;
+            text-transform: uppercase;
+        }	
+	</style>
+	
+	<script type="text/javascript">
+		$(document).ready(function () {		
+			Refresh();
+			setInterval("Refresh()", 60000); //60 seconds * 1000 = 60000 milliseconds		
+		});
+		
+		//Redefine the console.log function, this turns it off when uncommented
+		//console.log = function() {}
+		
+		var baseUrl = "http://10.3.99.201";
+		var apiKey = "?key=abf17b62af1a016ba49c91705546f81226237c6e";
+		var issueResource = "/issues.json";
+		var issueResourceFilters = "&sort=id%3Adesc&project_id=3";
+		
+		function LoadTable(data)
+		{		
+			$("#resultstbody").html("");
+			$.each(data.issues, function (index, obj) {
+				//console.log(obj);
+								
+				$("#resultstbody").append(
+				"<tr class='" + SetColour(obj.priority.id) + "'>" +
+				"<td>" + obj.id + "</td>" +
+				"<td>" + obj.tracker.name + "</td>" +
+				"<td>" + obj.status.name + "</td>" +	
+				"<td>" + obj.priority.name + "</td>" +		
+				"<td>" + obj.subject + "</td>" +
+                "<td>" + SetAssignedTo(obj) + "</td>" +				
+				"</tr>" );
+            });		
+			
+			if ($.fn.dataTable.isDataTable('#results')) {
+				$('#example').DataTable();
+			}
+			else {
+				$('#results').DataTable({
+					paging: false,
+					order:[[1,"desc"]],
+					searching: false
+				});
+			}						
+		}
+		
+		function Refresh() {
+			var url = baseUrl + issueResource + apiKey + issueResourceFilters;
+			//console.log(url);
+			
+			$.ajax({
+				url: url,
+				type: 'GET',
+				crossDomain: true,
+				dataType: 'jsonp',
+				contentType  : 'application/json',
+				success: function(data) {
+					LoadTable(data);
+				},
+				error: function () {
+					alert('Failed to reload data.');
+				}			
+			});
+		}
+		
+		function SetColour(priorityId){
+			console.log(priorityId);		
+			
+			//** orange
+			//4 Normal
+			//5 High
+			if (priorityId == 4 || priorityId == 5 || priorityId == 2)
+			{
+				return "orange";
+			}	
+			
+			//** red
+			//6 Urgent
+			//7 Immediate
+			//23 Critical
+			if (priorityId == 6 || priorityId == 7 || priorityId == 23 || priorityId == 1)
+			{
+				return "red";
+			}			
+			
+			return "";
+		}
+		
+		function SetAssignedTo(obj){
+			console.log(obj);
+		
+			if (obj == null || obj.assigned_to == null || obj.assigned_to.name == null)
+			{
+				return "";
+			}
+			
+			return obj.assigned_to.name;
+		}
+	</script>	
+</head>
+<body>
+	<table id="results">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Tracker</th>
+				<th>Status</th>		
+				<th>Priority</th>		
+				<th>Subject</th>
+				<th>Assigned To</th>				
+			</tr>
+		</thead>
+		<tbody id="resultstbody">
+		</tbody>
+	</table>
+</body>
+</html>
