@@ -4,7 +4,9 @@ Redmine war board using the built in redmine API, jQuery and datatables.net
 
 # Docker setup
 
-For testing I spun up two docker containers, an older version 2 and a new version 3. The shell script for this is here:
+For testing I spun up two docker containers, an older version 2 and a new version 3. 
+
+The shell script for this is here:
 
 https://github.com/charleyza/DockerDemo/tree/master/Docker%20(Linux)/Ubuntu/redmine
 
@@ -16,11 +18,15 @@ Version 3.4.6; Administration -> Settings -> API
 Check: 'Enable REST web service'
 Check: 'Enable JSONP support'
 
+* [Enable API in 3.4.6](https://github.com/charleyza/DockerDemo/blob/master/Docker%20(Linux)/Ubuntu/redmine/Enable%20API%20in%203.4.6.PNG)
+
 For older versions:
 
 Version 2.6.6; Administration -> Settings -> Authentication
 Check: 'Enable REST web service'
 Check: 'Enable JSONP support'
+
+* [Enable API in 2.6.6](https://github.com/charleyza/DockerDemo/blob/master/Docker%20(Linux)/Ubuntu/redmine/Enable%20API%20in%202.6.6.PNG)
 
 # API access key
 pass as ?key=82d03d58d59c5eae4a2f8560646e329c9644f619

@@ -9,25 +9,6 @@
 	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 	<script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>	
 	
-	<style>
-	body {
-		font-family: Verdana, sans-serif;
-		font-size: 18px;
-	}	
-	#results tbody tr td:nth-child(2),#results tbody tr td:nth-child(3),#results tbody tr td:nth-child(4) {
-		text-align:center;
-	}
-	.green{
-		color:#40bf40;
-	}
-	.orange{
-		color:#cca300;
-	}
-	.red{
-		color:#ff3333;
-	}	
-	</style>
-	
 	<script type="text/javascript">
 		$(document).ready(function () {		
 			Refresh();
@@ -37,26 +18,28 @@
 		//Redefine the console.log function, this turns it off when uncommented
 		//console.log = function() {}
 		
-		var baseUrl = "http://10.0.0.103:3005";
-		var apiKey = "?key=2aef5f4ef44fb21c94c5aeca79fe8c0d4a310166";
+		var baseUrl = "http://10.3.99.201";
+		var apiKey = "?key=abf17b62af1a016ba49c91705546f81226237c6e";
 		var issueResource = "/issues.json";
-		var issueResourceFilters = "&sort=id%3Adesc&project_id=1";
+		var issueResourceFilters = "&sort=id%3Adesc&project_id=3";
 		
 		function LoadTable(data)
 		{		
 			$("#resultstbody").html("");
 
 			$.each(data.issues, function (index, obj) {
-				//console.log(obj);
+				//console.log(obj.id);
+				//console.log(obj.tracker.name);
+				//console.log(obj.subject);
 								
 				$("#resultstbody").append(
-				"<tr class='" + SetColour(obj.priority.id) + "'>" +
+				"<tr>" +
 				"<td>" + obj.id + "</td>" +
 				"<td>" + obj.tracker.name + "</td>" +
 				"<td>" + obj.status.name + "</td>" +	
 				"<td>" + obj.priority.name + "</td>" +		
-				"<td>" + obj.subject + "</td>" +
-                "<td>" + SetAssignedTo(obj) + "</td>" +				
+				"<td>" + obj.subject + "</td>" +	
+				"<td>" + obj.created_on + "</td>" +					
 				"</tr>" );
             });		
 			
@@ -66,15 +49,14 @@
 			else {
 				$('#results').DataTable({
 					paging: false,
-					order:[[1,"desc"]],
-					searching: false
+					order:[[1,"desc"]]
 				});
 			}						
 		}
 		
 		function Refresh() {
 			var url = baseUrl + issueResource + apiKey + issueResourceFilters;
-			//console.log(url);
+			console.log(url);
 			
 			$.ajax({
 				url: url,
@@ -90,49 +72,6 @@
 				}			
 			});
 		}
-		
-		function SetColour(priorityId){
-			console.log(priorityId);		
-		
-			//** green
-			//22 Extremely - Low
-			//3 Low
-			//21 Medium - Low
-			if (priorityId == 22 || priorityId == 3 || priorityId == 21)
-			{
-				return "green";
-			}
-			
-			//** orange
-			//4 Normal
-			//5 High
-			if (priorityId == 4 || priorityId == 5 || priorityId == 2)
-			{
-				return "orange";
-			}	
-			
-			//** red
-			//6 Urgent
-			//7 Immediate
-			//23 Critical
-			if (priorityId == 6 || priorityId == 7 || priorityId == 23 || priorityId == 1)
-			{
-				return "red";
-			}			
-			
-			return "";
-		}
-		
-		function SetAssignedTo(obj){
-			console.log(obj);
-		
-			if (obj == null || obj.assigned_to == null || obj.assigned_to.name == null)
-			{
-				return "";
-			}
-			
-			return obj.assigned_to.name;
-		}
 	</script>	
 </head>
 <body>
@@ -143,8 +82,8 @@
 				<th>Tracker</th>
 				<th>Status</th>		
 				<th>Priority</th>		
-				<th>Subject</th>
-				<th>Assigned To</th>				
+				<th>Subject</th>			
+				<th>Created On</th>					
 			</tr>
 		</thead>
 		<tbody id="resultstbody">
