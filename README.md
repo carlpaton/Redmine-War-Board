@@ -14,6 +14,8 @@ For help setting up docker: https://carlpaton.co.za/category/docker/
 
 # Enable API
 
+Default login is admin/admin
+
 Version 3.4.6; Administration -> Settings -> API
 Check: 'Enable REST web service'
 Check: 'Enable JSONP support'
